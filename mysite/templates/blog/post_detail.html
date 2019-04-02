@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title }} | {{ block.super }}{% endblock %}
+{% block content %}
+
+<h3>{{ post.title }}</h3>
+<small>post created by: {{ post.author }}</small>
+<hr>
+<p>{{ post.body }}</p>
+{% endblock %}

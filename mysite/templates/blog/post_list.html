@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Welcome to {{ block.super }}{% endblock %}
+{% block content %}
+<div class="row">
+        {% for p in posts %}
+        <div class="col-md-6">
+            <div class="img-thumbnail">
+                <a href="{{ p.get_absolute_url }}">{{ p.title }}</a><small style="float:right">{{ p.created }}</small></small><br>
+                   Author: {{ p.author }}<br>
+                   <p>{{ p.body }}</p>
+            </div> 
+            <br>
+        </div>
+        {% endfor %}
+
+
+    </div>
+
+{% endblock %}
+
+
+
