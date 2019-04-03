@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login,logout
 from .models import Post
-from .forms import PostCreateForm,UserLoginForm
+from .forms import PostCreateForm,UserLoginForm,UserRegistrationForm
 
 def post_list(request):
     posts = Post.objects.all()
@@ -64,4 +64,21 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('post_list')
+    return redirect('blog:post_list')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST or None)
+        if form.is_valid():
+            new_user = form.save(commmit=False)
+            new_user.self_password(form.cleaned_data['password'])
+            new_user.save()
+            return redirect('blog:post_list')
+    else:
+        form = UserRegistrationForm()
+    context = {
+        'form':form
+    }
+
+    return render(request, 'registration/register.html',context)

@@ -3,6 +3,11 @@
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
+    <small>
+            <a href="{% url 'blog:register' %}">Register</a> |
+            <a href="{% url 'password_reset' %}">Forgotten Your password</a>
+    
+        </small>
     <input type="submit" name="" value="Login" class="btn btn-primary">
 
 </form>
