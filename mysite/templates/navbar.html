@@ -18,9 +18,16 @@
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% if request.user.profile.photo %}
+                 <img src="{{ request.user.profile.photo.url }}" alt="" class="navbar-img">
+                 {% else %}
+                 <img src="/media/alo.png" alt="" class="navbar-img">
+                  {% endif %}
                   <span>Hi {{ request.user|capfirst }}</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'blog:edit_profile' %}">My profile</a>
+    
                     <a class="dropdown-item" href="{% url 'blog:user_logout' %}">Logout</a>
 
                   </div>

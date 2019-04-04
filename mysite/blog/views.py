@@ -1,9 +1,10 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib.auth import authenticate, login,logout
-from .models import Post
-from .forms import PostCreateForm,UserLoginForm,UserRegistrationForm
+from .models import Post,Profile
+from .forms import PostCreateForm,UserLoginForm,UserRegistrationForm,UserEditForm,ProfileEditForm
 
 def post_list(request):
     posts = Post.objects.all()
@@ -74,6 +75,7 @@ def register(request):
             new_user = form.save(commmit=False)
             new_user.self_password(form.cleaned_data['password'])
             new_user.save()
+            Profile.objects.create(user=new_user)
             return redirect('blog:post_list')
     else:
         form = UserRegistrationForm()
@@ -82,3 +84,25 @@ def register(request):
     }
 
     return render(request, 'registration/register.html',context)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(data=request.POST or None, instance=request.user)
+        profile_form = ProfileEditForm(data=request.POST or None, instance=request.user.profile, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return HttpResponseRedirect(reverse("blog:edit_profile"))
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+
+
+    context = {
+        'user_form':user_form,
+        'profile_form':profile_form
+    }
+
+    return render(request,'blog/edit_profile.html', context)

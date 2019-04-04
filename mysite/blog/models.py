@@ -17,7 +17,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, related_name='blog_posts',on_delete=None)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add = True)
-    udated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
     def get_absolute_url(self):
