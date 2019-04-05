@@ -13,6 +13,11 @@
             </div> 
             <br>
         </div>
+        {% empty %}
+        <div class="conatiner-fluid">
+
+            <h3>No posts Found having search query "{{ request.GET.q }}" </h3>
+        </div>
         {% endfor %}
 
 

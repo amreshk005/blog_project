@@ -1,13 +1,22 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.urls import reverse
 from django.contrib.auth import authenticate, login,logout
 from .models import Post,Profile
 from .forms import PostCreateForm,UserLoginForm,UserRegistrationForm,UserEditForm,ProfileEditForm
 
 def post_list(request):
-    posts = Post.objects.all()
+    posts = Post.published.all()
+    query = request.GET.get('q')
+    print(query)
+    if query:
+        posts = Post.published.filter(
+            Q(title__icontains=query)|
+            Q(author__username=query)|
+            Q(body__icontains=query)
+        )
     context = {
         'posts':posts,
     }
@@ -102,7 +111,7 @@ def edit_profile(request):
 
     context = {
         'user_form':user_form,
-        'profile_form':profile_form
+        'profile_form':profile_form,
     }
 
     return render(request,'blog/edit_profile.html', context)
