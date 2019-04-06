@@ -24,10 +24,14 @@ class Post(models.Model):
     slug = models.SlugField(max_length=120)
     author = models.ForeignKey(User, related_name='blog_posts',on_delete=None)
     body = models.TextField()
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
+
+    class Meta:
+        ordering = ['-id']
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.id, self.slug])
     def __str__(self):

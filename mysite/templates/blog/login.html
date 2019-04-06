@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method="POST">
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <input type="submit" value="Login" class="btn btn-outline-success">
+    <br>
     <small>
             <a href="{% url 'blog:register' %}">Register</a> |
             <a href="{% url 'password_reset' %}">Forgotten Your password</a>
     
         </small>
-    <input type="submit" name="" value="Login" class="btn btn-primary">
+        
+    <p>-- OR --</p>
+    <a href="{% url 'social:begin' 'github' %}">
+        <button type="button" name="button" class="btn btn-primary">Github</button>
+    </a>
+
+    <a href="{% url 'social:begin' 'google-oauth2' %}">
+        <button type="button" name="button" class="btn btn-danger">Google+</button>
+    </a>
 
 </form>
 {% endblock %}
