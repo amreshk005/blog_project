@@ -14,3 +14,15 @@ body {
     margin-top:-5px;
     margin-right: 5px;
 }
+
+.gallery {
+    margin-top:20px;
+    margin-bottom:20px;
+
+}
+
+.gallery .thumbnail {
+    height: 250px;
+    width: 300px;
+}
+    

@@ -10,6 +10,15 @@ class PostCreateForm(forms.ModelForm):
             'status',
 
         )
+class PostEditForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = (
+            'title',
+            'body',
+            'status',
+
+        )
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(label="")

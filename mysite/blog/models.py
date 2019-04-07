@@ -32,8 +32,13 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-id']
+
+
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.id, self.slug])
+
+    def total_likes(self):
+        return self.likes.count()
     def __str__(self):
         return self.title
 
@@ -51,3 +56,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return "Profile of user {}".format(self.user.username)
+
+class Images(models.Model):
+    post = models.ForeignKey(Post,on_delete=None)
+    image = models.ImageField(upload_to='images/',blank=True, null=True)
+
+
+    def __str__(self):
+        return self.post.title + "Image"
