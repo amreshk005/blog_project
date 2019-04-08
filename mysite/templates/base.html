@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'blog/style.css' %}">
 
@@ -16,7 +17,9 @@
 <div class="container-fluid">
         {% block content %}
         {% endblock %}
+        {% include 'blog/footer.html' %}
     </div>
+
     <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -28,6 +31,10 @@
 
       $('#delete').click(function(){
         return confirm("Are you sure to delete this post");
+      });
+
+      $('.reply-btn').click(function() {
+        $(this).parent().parent().next('.replied-comments').fadeToggle()
       });
 
       $(function(){
@@ -53,6 +60,60 @@
         });
       });
     });
+
+
+    $(document).on('submit', '.comment-form', function(event){
+      event.preventDefault();
+      console.log($(this).serialize());
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data:$(this).serialize(),
+        dataType:'json',
+        success: function(response){
+          $('.main-comment-section').html(response['form']);
+          $('textarea').val('');
+          $('.reply-btn').click(function() {
+          $(this).parent().parent().next('.replied-comments').fadeToggle()
+          $('textarea').val('');
+
+        });
+
+        },
+        error: function(rs, e){
+          console.log(rs.responseText);
+        },
+      });
+    });
+
+
+
+    $(document).on('submit', '.reply-form', function(event){
+      event.preventDefault();
+      console.log($(this).serialize());
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data:$(this).serialize(),
+        dataType:'json',
+        success: function(response){
+          $('.main-comment-section').html(response['form']);
+          $('textarea').val('');
+          $('.reply-btn').click(function() {
+          $(this).parent().parent().next('.replied-comments').fadeToggle()
+          $('textarea').val('');
+
+        });
+
+        },
+        error: function(rs, e){
+          console.log(rs.responseText);
+        },
+      });
+    });
+
+
+
     </script>
 
 </body>

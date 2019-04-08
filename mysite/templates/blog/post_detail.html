@@ -21,6 +21,17 @@
 <div id='like-section'>
         {% include 'blog/like_section.html' %}
 </div>
+<div class="favourite-section">
+    {% if is_favourite %}
+    <a href="{% url 'blog:favourite_post' id=post.id %}">
+    <i class="fas fa-heart fa-lg"></i>
+</a>
+{% else %}
+<a href="{% url 'blog:favourite_post' id=post.id %}">
+        <i class="far fa-heart fa-lg"></i>
+    </a>
+    {% endif %}
+</div>
 {% if post.author == request.user %}
 
 <div class="section-1" style="float:right;">
@@ -36,27 +47,12 @@
 <br><br>
 <hr>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ comment_form.as_p }}
-    {% if request.user.is_authenticated %}
-    <input type="submit" value="Submit" class="btn btn-outline-success">
-    {% else %}
-    <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
-    <h5>please Login for Comment</h5>
-    {% endif %}
-</form>
 
 
 
+{% if not post.restrict_comment %}
 <div class="main-comment-section">
-    {{ comments.count }} Comment{{ comments|pluralize }}
-    {% for comment in comments %}
-
-    <blockquote class="blockquote">
-    <p class="mb-0">{{ comment.content }}</p>
-    <footer class="blockquote-footer">by<cite title="Source Title">{{ comment.user|capfirst }}</cite></footer>
-    </blockquote>
-    {% endfor %}
+{% include 'blog/comments.html' %}
 </div>
+{% endif %}
 {% endblock %}

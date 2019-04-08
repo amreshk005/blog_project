@@ -8,6 +8,7 @@ class PostCreateForm(forms.ModelForm):
             'title',
             'body',
             'status',
+            'restrict_comment'
 
         )
 class PostEditForm(forms.ModelForm):
@@ -17,6 +18,7 @@ class PostEditForm(forms.ModelForm):
             'title',
             'body',
             'status',
+            'restrict_comment'
 
         )
 
@@ -64,6 +66,7 @@ class ProfileEditForm(forms.ModelForm):
         exclude = ('user',)
 
 class CommentForm(forms.ModelForm):
+    content = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder':'Text goes here.....!!!!','rows':'4','cols':'50'}))
     class Meta:
         model = Comment
         fields = ('content',)

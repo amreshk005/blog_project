@@ -28,6 +28,8 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    restrict_comment = models.BooleanField(default=False)
+    favourite = models.ManyToManyField(User, related_name='favourite', blank=True)
 
 
     class Meta:
@@ -69,6 +71,7 @@ class Images(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+    reply = models.ForeignKey('Comment', null=True,related_name="replies",on_delete=models.CASCADE)
     content = models.TextField(max_length=160)
     timestamp = models.DateTimeField(auto_now_add=True)
 

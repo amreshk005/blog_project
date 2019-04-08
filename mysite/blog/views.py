@@ -64,32 +64,63 @@ def proper_pagination(posts, index):
 
 def post_detail(request, id, slug):
     post = get_object_or_404(Post, id=id, slug=slug)
-    comments = Comment.objects.filter(post=post).order_by('-id')
+    comments = Comment.objects.filter(post=post, reply=None).order_by('-id')
     print(comments)
     is_liked = False
+    is_favourite = False
+
     if post.likes.filter(id=request.user.id).exists():
         is_liked = True
+
+    if post.favourite.filter(id=request.user.id).exists():
+        is_favourite = True
+
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST or None)
         print(comment_form)
         if comment_form.is_valid():
             content = request.POST.get('content')
-            comment = Comment.objects.create(post=post, user=request.user, content=content)
+            reply_id = request.POST.get('comment_id')
+            comment_qs = None
+            if reply_id:
+                comment_qs = Comment.objects.get(id=reply_id)
+            comment = Comment.objects.create(post=post, user=request.user, content=content, reply=comment_qs)
             print(comment)
             comment.save()
-            return HttpResponseRedirect(post.get_absolute_url())
+            # return HttpResponseRedirect(post.get_absolute_url())
     else:
         comment_form = CommentForm()
 
     context = {
         'post':post,
         'is_liked':is_liked,
+        'is_favourite':is_favourite,
         'total_likes':post.total_likes, 
         'comments':comments,
         'comment_form':comment_form,
     }
+    if request.is_ajax():
+        html =  render_to_string('blog/comments.html',context, request=request)
+        return JsonResponse({'form':html})
     return render(request, 'blog/post_detail.html', context)
+
+def favourite_post(request, id):
+    post = get_object_or_404(Post, id=id)
+    if post.favourite.filter(id=request.user.id).exists():
+        post.favourite.remove(request.user)
+    else:
+        post.favourite.add(request.user)
+    return HttpResponseRedirect(post.get_absolute_url())
+
+def post_favourite_list(request):
+    user = request.user
+    favourite_posts = user.favourite.all()
+
+    context = {
+        'favourite_posts': favourite_posts,
+    }
+    return render(request, 'blog/post_favourite_list.html', context)
 
 def like_post(request):
     # post = get_object_or_404(Post, id=request.POST.get('post_id'))

@@ -1,10 +1,13 @@
 html {
     position: relative;
     min-height: 100%;
+    
 }
 
 body {
     font-family: 'Lucida Cassul', 'Comic Sans MS';
+    margin-bottom: 200px;
+
 }
 .navbar-img {
     width: 30px;
@@ -26,5 +29,16 @@ body {
     width: 300px;
 }
 
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 130px;
+    padding: 15px;
+    background-color: #2c3E50;
+}
 
-    
+.footer p {
+    text-align: justify;
+}

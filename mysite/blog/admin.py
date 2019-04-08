@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Post,Profile, Images,Comment
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title','slug','author','status')
+    list_display = ('title','slug','author','status',)
     list_filter = ('status','created','updated')
     search_fields = ('author_username','title')
     prepopulated_fields = {'slug':('title',)}
