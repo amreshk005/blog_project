@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post,Profile
+from .models import Post,Profile,Comment
 from django.contrib.auth.models import User
 class PostCreateForm(forms.ModelForm):
     class Meta:
@@ -62,3 +62,10 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ('user',)
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
+

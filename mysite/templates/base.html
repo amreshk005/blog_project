@@ -25,6 +25,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
     $(document).ready(function(event){
+
+      $('#delete').click(function(){
+        return confirm("Are you sure to delete this post");
+      });
+
+      $(function(){
+        setTimeout(function(){
+          $('.alert').slideUp(1000);
+        }, 2000);
+      })
       $(document).on('click', '#like', function(event){
         event.preventDefault();
         var pk= $(this).attr('value');

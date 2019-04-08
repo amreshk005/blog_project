@@ -11,6 +11,7 @@ from .forms import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
 from django.forms import modelformset_factory
+from django.contrib import messages
 
 
 def post_list(request):
@@ -63,14 +64,30 @@ def proper_pagination(posts, index):
 
 def post_detail(request, id, slug):
     post = get_object_or_404(Post, id=id, slug=slug)
+    comments = Comment.objects.filter(post=post).order_by('-id')
+    print(comments)
     is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         is_liked = True
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST or None)
+        print(comment_form)
+        if comment_form.is_valid():
+            content = request.POST.get('content')
+            comment = Comment.objects.create(post=post, user=request.user, content=content)
+            print(comment)
+            comment.save()
+            return HttpResponseRedirect(post.get_absolute_url())
+    else:
+        comment_form = CommentForm()
 
     context = {
         'post':post,
         'is_liked':is_liked,
         'total_likes':post.total_likes, 
+        'comments':comments,
+        'comment_form':comment_form,
     }
     return render(request, 'blog/post_detail.html', context)
 
@@ -111,6 +128,8 @@ def post_create(request):
                     
                 except Exception as e:
                     break
+
+            messages.success(request, "{} has been successfully updated!".format(post.title))
             return redirect('blog:post_list')
     else:
         form = PostCreateForm()
@@ -233,4 +252,17 @@ def edit_profile(request):
     }
 
     return render(request,'blog/edit_profile.html', context)
+
+
+def post_delete(request, id):
+    post = get_object_or_404(Post, id=id)
+    if request.user != post.author:
+        raise Http404()
+
+    post = post.delete()
+    messages.warning(request, 'post has been successfully deleted!')
+
+    return redirect('blog:post_list')
+
+
 

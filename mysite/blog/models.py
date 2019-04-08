@@ -22,7 +22,7 @@ class Post(models.Model):
     }
     title =  models.CharField(max_length=100)
     slug = models.SlugField(max_length=120)
-    author = models.ForeignKey(User, related_name='blog_posts',on_delete=None)
+    author = models.ForeignKey(User, related_name='blog_posts',on_delete=models.CASCADE)
     body = models.TextField()
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
     created = models.DateTimeField(auto_now_add = True)
@@ -58,9 +58,19 @@ class Profile(models.Model):
         return "Profile of user {}".format(self.user.username)
 
 class Images(models.Model):
-    post = models.ForeignKey(Post,on_delete=None)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/',blank=True, null=True)
 
 
     def __str__(self):
         return self.post.title + "Image"
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    content = models.TextField(max_length=160)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.post.title

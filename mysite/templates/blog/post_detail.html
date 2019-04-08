@@ -2,11 +2,9 @@
 {% load static %}
 {% block title %}{{ post.title }} | {{ block.super }}{% endblock %}
 {% block content %}
+{% include 'blog/alert.html' %}
 
 <h3>{{ post.title }}</h3>
-
-
-
 <small>post created by: {{ post.author }}</small>
 <hr>
 <p>{{ post.body }}</p>
@@ -19,16 +17,46 @@
     </div>
     {% endfor %}
 </div>
-
-{% if post.author == request.user %}
+<hr><hr>
 <div id='like-section'>
-    {% include 'blog/like_section.html' %}
+        {% include 'blog/like_section.html' %}
 </div>
+{% if post.author == request.user %}
+
 <div class="section-1" style="float:right;">
 <a href="{% url 'blog:post_edit' id=post.id %}">
     <button type="button" class="btn btn-outline-success">Edit</button>
 </a>
+<a href="{% url 'blog:post_delete' id=post.id %}" id="delete">
+    <button type="button" class="btn btn-danger">Delete</button>
+</a>
 </div>
 
 {% endif %}
+<br><br>
+<hr>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    {% if request.user.is_authenticated %}
+    <input type="submit" value="Submit" class="btn btn-outline-success">
+    {% else %}
+    <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
+    <h5>please Login for Comment</h5>
+    {% endif %}
+</form>
+
+
+
+<div class="main-comment-section">
+    {{ comments.count }} Comment{{ comments|pluralize }}
+    {% for comment in comments %}
+
+    <blockquote class="blockquote">
+    <p class="mb-0">{{ comment.content }}</p>
+    <footer class="blockquote-footer">by<cite title="Source Title">{{ comment.user|capfirst }}</cite></footer>
+    </blockquote>
+    {% endfor %}
+</div>
 {% endblock %}
